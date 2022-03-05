@@ -14,12 +14,21 @@ public class PasswordEncodingTests {
     static final String PASSWORD = "password";
 
     @Test
+    public void testBcrypt15() {
+        PasswordEncoder bcrypt = new BCryptPasswordEncoder(10);
+
+        System.out.println(bcrypt.encode(PASSWORD));
+        System.out.println(bcrypt.encode(PASSWORD));
+        System.out.println(bcrypt.encode("tiger"));
+    }
+
+    @Test
     public void testBcrypt() {
         PasswordEncoder bcrypt = new BCryptPasswordEncoder();
 
         System.out.println(bcrypt.encode(PASSWORD));
         System.out.println(bcrypt.encode(PASSWORD));
-        System.out.println(bcrypt.encode("guru"));
+        System.out.println(bcrypt.encode("tiger"));
     }
 
     @Test
