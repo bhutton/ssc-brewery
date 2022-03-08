@@ -122,4 +122,5 @@ public class DefaultBreweryLoader implements CommandLineRunner {
 
         }
     }
+
 }
