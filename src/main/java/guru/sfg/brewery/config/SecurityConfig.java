@@ -20,15 +20,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     authorize
                             .antMatchers("/h2-console/**").permitAll() // do not user in production!
                             .antMatchers("/", "/webjars/**", "/resources/**").permitAll()
-                            .antMatchers("/beers/find", "/beers*", "/beers/*").permitAll()
+                            .antMatchers("/beers/find", "/beers*").permitAll()
                             .antMatchers(HttpMethod.GET, "/api/v1/beer/**").permitAll()
+                            .mvcMatchers(HttpMethod.DELETE, "/api/v1/beer/**").hasRole("ADMIN")
+                            .mvcMatchers(HttpMethod.GET, "/brewery/api/v1/breweries").hasRole("USER")
+                            .mvcMatchers("brewery/breweries").hasAnyRole("USER", "ADMIN")
                             .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}").permitAll();
                 })
                 .authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().and()
-                .httpBasic();
+                .httpBasic()
+                .and().csrf().disable();
         // h2 console
         http.headers().frameOptions().sameOrigin();
     }
