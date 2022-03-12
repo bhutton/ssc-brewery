@@ -73,9 +73,30 @@ public class BeerRestControllerIT extends BaseIT {
     }
 
     @Test
-    public void findBeersByUpcs() throws Exception {
+    public void findBeersByUpcsNoAuth() throws Exception {
         mockMvc.perform(get("/api/v1/beerUpc/0631234200036"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void findBeersByUpcsUserRole() throws Exception {
+        mockMvc.perform(get("/api/v1/beerUpc/0631234200036")
+                        .with(httpBasic("user", "password")))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void findBeersByUpcsCustomerRole() throws Exception {
+        mockMvc.perform(get("/api/v1/beerUpc/0631234200036")
+                        .with(httpBasic("scott", "tiger")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void findBeersByUpcsAdminRole() throws Exception {
+        mockMvc.perform(get("/api/v1/beerUpc/0631234200036")
+                .with(httpBasic("spring", "guru"))
+        ).andExpect(status().isOk());
     }
 
 }

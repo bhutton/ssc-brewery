@@ -3,7 +3,6 @@ package guru.sfg.brewery.web.controllers;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -38,17 +37,33 @@ public class BeerControllerIT extends BaseIT {
 
 
     @Test
-    public void findBeers() throws Exception {
+    public void findBeersNoAuth() throws Exception {
         mockMvc.perform(get("/beers/find"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("beers/findBeers"))
-                .andExpect(model().attributeExists("beer"));
-
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void findBeersWithAnonymous() throws Exception {
-        mockMvc.perform(get("/beers/find").with(anonymous()))
+    public void findBeersWithUserRole() throws Exception {
+        mockMvc.perform(get("/beers/find").
+                        with(httpBasic("user", "password")))
+                .andExpect(status().isOk())
+                .andExpect(view().name("beers/findBeers"))
+                .andExpect(model().attributeExists("beer"));
+    }
+
+    @Test
+    public void findBeersWithCustomerRole() throws Exception {
+        mockMvc.perform(get("/beers/find").
+                        with(httpBasic("scott", "tiger")))
+                .andExpect(status().isOk())
+                .andExpect(view().name("beers/findBeers"))
+                .andExpect(model().attributeExists("beer"));
+    }
+
+    @Test
+    public void findBeersWithAdminRole() throws Exception {
+        mockMvc.perform(get("/beers/find").
+                        with(httpBasic("spring", "guru")))
                 .andExpect(status().isOk())
                 .andExpect(view().name("beers/findBeers"))
                 .andExpect(model().attributeExists("beer"));
