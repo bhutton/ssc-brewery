@@ -26,14 +26,6 @@ public class UserDataLoader implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
 
-    @Transactional
-    @Override
-    public void run(String... args) {
-        if (authorityRepository.count() == 0) {
-            loadUserData();
-        }
-    }
-
     private void loadUserData() {
         Authority createBeer = authorityRepository.save(Authority.builder().permission("beer.create").build());
         Authority readBeer = authorityRepository.save(Authority.builder().permission("beer.read").build());
@@ -86,6 +78,14 @@ public class UserDataLoader implements CommandLineRunner {
                 .build());
 
         log.debug("Users loaded: " + userRepository.count());
+    }
+
+    @Transactional
+    @Override
+    public void run(String... args) {
+        if (authorityRepository.count() == 0) {
+            loadUserData();
+        }
     }
 
 }
